@@ -1,0 +1,22 @@
+[package]
+name = "ferrischat"
+version = "0.0.0"
+edition = "2018"
+license = "MIT"
+description = "A API wrapper for the FerrisChat API (reserved for future use)"
+homepage = "https://ferris.chat"
+documentation = "https://docs.rs/ferrischat"
+repository = "https://github.com/FerrisChat/Rust_API"
+# readme = "README.md"
+include = [
+  "**/*.rs",
+  "Cargo.toml",
+  "/.gitignore",
+  "/LICENSE",
+  "/README.md"
+]
+
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
