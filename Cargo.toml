@@ -1,22 +1,53 @@
 [package]
 name = "ferrischat"
-version = "0.0.0"
-edition = "2018"
-license = "MIT"
-description = "A API wrapper for the FerrisChat API (reserved for future use)"
+version = "0.0.1"
+edition = "2021"
+license = "EUPL-1.2"
+description = "A API wrapper for the FerrisChat API"
 homepage = "https://ferris.chat"
 documentation = "https://docs.rs/ferrischat"
-repository = "https://github.com/FerrisChat/Rust_API"
+repository = "https://github.com/FerrisChat/ferrischat.rs"
 # readme = "README.md"
 include = [
-  "**/*.rs",
+  "src/**/*",
   "Cargo.toml",
   "/.gitignore",
   "/LICENSE",
   "/README.md"
 ]
 
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
+
+[dependencies.reqwest]
+default-features = false
+features = ["json", "multipart", "stream"]
+optional = true
+version = "0.11"
+
+[dependencies.tokio]
+version = "1"
+default-features = true
+features = ["fs", "macros", "rt", "sync", "time"]
+
+[dependencies.tokio-tungstenite]
+version = "0.15"
+default-features = false
+optional = true
+features = ["tokio_runtime"]
+
+[dependencies.ferrischat_common]
+version = "0.2"
+git = "https://github.com/FerrisChat/Common"
+
+[features]
+default = ["rustls_tls", "all"]
+
+http = ["http"]
+model = ["model"]
+websocket = ["websocket"]
+
+all = ["http", "model", "websocket"]
+
+rustls_tls = ["reqwest/rustls-tls", "tokio-tungstenite/rustls-tls-webpki-roots"]
+
+native-tls = ["reqwest/native-tls", "tokio-tungstenite/native-tls"]
