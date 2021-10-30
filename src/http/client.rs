@@ -36,30 +36,37 @@ impl HttpClient {
     }
 
     pub async fn request(&self, expected: u16, &request: Request) -> Result<ReqwestResponse> {
-        let request_builder = self.client.request(
-            request.method,
-            format!("{}/{}", self.base_url, request.route),
-        );
+        for tries in 0..3 {
+            let request_builder = self.client.request(
+                request.method,
+                format!("{}/{}", self.base_url, request.route),
+            );
 
-        if let body = Some(request.body) {
-            request_builder.json(&request.body);
-        }
-
-        if let headers = Some(request.headers) {
-            request_builder.headers(&request.headers);
-        }
-
-        let response = request_builder.send().await;
-
-        if let Ok(response) = response {
-            if response.status().as_u16() == expected {
-                Ok(response)
-            } else {
-                Err(()) // TODO: handle error
+            if let body = Some(request.body) {
+                request_builder.json(request.body);
             }
-        } else {
-            Err(()) // TODO: handle error
+
+            if let headers = Some(request.headers) {
+                request_builder.headers(request.headers);
+            }
+
+            let response = request_builder.send().await;
+
+            if let Ok(response) = response {
+                if response.status().as_u16() == expected {
+                    return Ok(response)
+                } else {
+                    if tries == 2 {
+                        break
+                    }
+                }
+            } else {
+                if tries == 2 {
+                    break
+                }
+            }
         }
+        Err(()) // TODO: Return Error
     }
 }
 
