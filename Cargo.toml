@@ -20,7 +20,7 @@ include = [
 
 [dependencies.reqwest]
 default-features = false
-features = ["json", "multipart", "stream"]
+features = ["json", "multipart", "stream", "gzip"]
 optional = true
 version = "0.11"
 
@@ -33,7 +33,7 @@ features = ["fs", "macros", "rt", "sync", "time"]
 version = "0.15"
 default-features = false
 optional = true
-features = ["tokio_runtime"]
+features = ["connect"]
 
 [dependencies.ferrischat_common]
 version = "0.2"
@@ -50,4 +50,4 @@ all = ["http", "model", "websocket"]
 
 rustls_tls = ["reqwest/rustls-tls", "tokio-tungstenite/rustls-tls-webpki-roots"]
 
-native-tls = ["reqwest/native-tls", "tokio-tungstenite/native-tls"]
+native_tls = ["reqwest/native-tls", "tokio-tungstenite/native-tls"]
