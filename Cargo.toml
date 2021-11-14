@@ -42,12 +42,12 @@ git = "https://github.com/FerrisChat/Common"
 [features]
 default = ["rustls_tls", "all"]
 
-http = ["http"]
-model = ["model"]
-websocket = ["websocket"]
+http = []
+model = []
+websocket = []
 
 all = ["http", "model", "websocket"]
 
-rustls_tls = ["reqwest/rustls-tls", "tokio-tungstenite/rustls-tls-webpki-roots"]
+rustls_tls = ["reqwest/rustls-tls", "tokio-tungstenite/rustls-tls"]
 
 native_tls = ["reqwest/native-tls", "tokio-tungstenite/native-tls"]
