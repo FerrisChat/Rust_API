@@ -45,6 +45,7 @@ impl HttpClient {
         expected: u16,
         &request: &Request<'_>,
     ) -> Result<ReqwestResponse, ReqwestError> {
+        let mut response;
         for tries in 0..3 {
             let request_builder = self.client.request(
                 request.method,
@@ -59,22 +60,24 @@ impl HttpClient {
                 request_builder.headers(headers);
             }
 
-            let response = request_builder.send().await;
+            response = request_builder.send().await;
 
             if let Ok(response) = response {
                 if response.status().as_u16() == expected {
                     return Ok(response);
                 } else {
                     if tries == 2 {
-                        return Err(response);
+                        break;
                     }
                 }
             } else {
                 if tries == 2 {
-                    return Err(response);
+                    break;
                 }
             }
         }
+
+        Err(response)
         // TODO: Return Error
     }
 }
