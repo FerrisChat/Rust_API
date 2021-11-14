@@ -33,7 +33,7 @@ impl HttpClient {
             token: token.to_string(),
             base_url: "https://api.ferris.chat/v0".to_string(),
             // routes_ratelimit: Arc<DashMap::new()>,
-        };
+        }
 
         // add_locks(&http);
     }
@@ -49,11 +49,11 @@ impl HttpClient {
                 format!("{}/{}", self.base_url, request.route),
             );
 
-            if let body = Some(request.body) {
+            if let Some(body) = request.body {
                 request_builder.json(&body);
             }
 
-            if let headers = Some(request.headers) {
+            if let Some(headers) = request.headers {
                 request_builder.headers(headers);
             }
 
