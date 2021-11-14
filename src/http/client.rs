@@ -35,7 +35,7 @@ impl HttpClient {
         // add_locks(&http);
     }
 
-    pub async fn request(&self, expected: u16, &request: Request) -> Result<ReqwestResponse> {
+    pub async fn request(&self, expected: u16, &request: &Request<'_>) -> Result<ReqwestResponse, Err> {
         for tries in 0..3 {
             let request_builder = self.client.request(
                 request.method,
