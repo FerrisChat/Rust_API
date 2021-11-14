@@ -77,7 +77,7 @@ impl HttpClient {
             }
         }
 
-        Err(response)
+        Err(response.unwrap_err())
         // TODO: Return Error
     }
 }
