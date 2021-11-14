@@ -1,11 +1,11 @@
 use reqwest::header::HeaderMap;
 use reqwest::Method;
 
-struct Request {
-    method: Method,
-    route: String,
-    headers: Optional<HeaderMap>,
-    body: Option<&'a [u8]>,
+pub struct Request<'a> {
+    pub method: Method,
+    pub route: String,
+    pub headers: Option<HeaderMap>,
+    pub body: Option<&'a [u8]>,
 }
 
 impl<'a> Request<'a> {
@@ -16,7 +16,7 @@ impl<'a> Request<'a> {
         self.body = None;
     }
 
-    pub fn headers(&mut self, headers: Optional<HeaderMap>) {
+    pub fn headers(&mut self, headers: Option<HeaderMap>) {
         self.headers = headers;
     }
 
