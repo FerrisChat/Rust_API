@@ -1,5 +1,7 @@
 use std::sync::Arc;
 
+use std::result::Result;
+
 use super::request::Request;
 // use dashmap::DashMap;
 
@@ -42,7 +44,7 @@ impl HttpClient {
         &self,
         expected: u16,
         &request: &Request<'_>,
-    ) -> Result<ReqwestResponse, Err> {
+    ) -> Result<ReqwestResponse, Result> {
         for tries in 0..3 {
             let request_builder = self.client.request(
                 request.method,
