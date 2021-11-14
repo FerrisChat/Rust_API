@@ -5,7 +5,7 @@ use std::result::Result;
 use super::request::Request;
 // use dashmap::DashMap;
 
-use reqwest::{header, Client, ClientBuilder, Response as ReqwestResponse};
+use reqwest::{header, Client, ClientBuilder, Error as ReqwestError, Response as ReqwestResponse};
 
 pub struct HttpClient {
     pub client: Arc<Client>,
@@ -44,7 +44,7 @@ impl HttpClient {
         &self,
         expected: u16,
         &request: &Request<'_>,
-    ) -> Result<ReqwestResponse, Result> {
+    ) -> Result<ReqwestResponse, ReqwestError> {
         for tries in 0..3 {
             let request_builder = self.client.request(
                 request.method,
@@ -66,16 +66,16 @@ impl HttpClient {
                     return Ok(response);
                 } else {
                     if tries == 2 {
-                        break;
+                        return Err(response);
                     }
                 }
             } else {
                 if tries == 2 {
-                    break;
+                    return Err(response);
                 }
             }
         }
-        Err(()) // TODO: Return Error
+        // TODO: Return Error
     }
 }
 
