@@ -53,7 +53,7 @@ impl HttpClient {
         }
 
         if let Some(headers) = request.headers {
-            &mut request_builder.headers(headers);
+            request_builder.headers(headers);
         }
 
         let response = request_builder.send().await;
