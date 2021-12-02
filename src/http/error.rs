@@ -2,8 +2,8 @@ use reqwest::{Response as ReqwestResponse, StatusCode, Url};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct HttpError {
-    pub status_code: Optional<StatusCode>,
-    pub url: Optional<Url>,
+    pub status_code: Option<StatusCode>,
+    pub url: Option<Url>,
     pub error: String,
 }
 
@@ -12,7 +12,7 @@ impl HttpError {
         HttpError {
             status_code: Some(r.status()),
             url: r.url().clone(),
-            error: r.text().await.unwrap_or_else(|| String::new()),
+            error: r.text().await.unwrap_or_else(|_| String::new()),
         }
     }
 }

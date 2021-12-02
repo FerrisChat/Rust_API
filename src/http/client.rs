@@ -62,7 +62,7 @@ impl HttpClient {
             if resp.status().is_success() {
                 return Ok(resp);
             } else {
-                Err(HttpError::from_response(resp).await)
+                return Err(HttpError::from_response(resp).await);
             }
         }
 
