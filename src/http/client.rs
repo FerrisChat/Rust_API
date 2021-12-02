@@ -16,8 +16,6 @@ pub struct HttpClient {
     // pub routes_ratelimit: Arc<DashMap<String, Mutex>>,
 }
 
-use tokio::sync::Mutex;
-
 impl HttpClient {
     pub fn new(token: &str) -> Self {
         let mut headers = header::HeaderMap::new();
