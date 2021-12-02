@@ -43,7 +43,7 @@ impl HttpClient {
     pub async fn request(
         &self,
         expected: u16,
-        &request: &Request<'_>,
+        request: Request<'_>,
     ) -> Result<ReqwestResponse, ReqwestError> {
         let mut response;
         for tries in 0..3 {
