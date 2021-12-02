@@ -7,6 +7,8 @@ use super::request::Request;
 
 use reqwest::{header, Client, ClientBuilder, Error as ReqwestError, Response as ReqwestResponse};
 
+use super::HttpError;
+
 pub struct HttpClient {
     pub client: Arc<Client>,
     pub token: String,
@@ -40,25 +42,25 @@ impl HttpClient {
         // add_locks(&http);
     }
 
-    pub async fn request(&self, request: Request<'_>) -> Result<ReqwestResponse, ReqwestError> {
+    pub async fn request(&self, request: Request<'_>) -> Result<ReqwestResponse, HttpError> {
         let request_builder = self.client.request(
             request.method.to_reqwest_method(),
             format!("{}/{}", self.base_url, request.route),
         );
 
-        if let Some(ref body) = request.body {
+        if let Some(body) = request.body {
             request_builder.json(body);
         }
 
-        if let Some(ref headers) = request.headers {
+        if let Some(headers) = request.headers {
             &mut request_builder.headers(headers);
         }
 
         let response = request_builder.send().await;
 
-        if let Ok(response) = response {
-            if response.status().is_success() {
-                Ok(response)
+        if let Ok(resp) = response {
+            if resp.status().is_success() {
+                return Ok(resp)
             }
         }
 

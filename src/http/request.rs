@@ -2,7 +2,7 @@ use super::HttpMethod;
 use reqwest::header::HeaderMap;
 
 pub struct Request<'a> {
-    pub method: Method,
+    pub method: HttpMethod,
     pub route: String,
     pub headers: Option<HeaderMap>,
     pub body: Option<&'a [u8]>,
