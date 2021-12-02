@@ -11,7 +11,7 @@ impl HttpError {
     pub async fn from_response(r: ReqwestResponse) -> Self {
         HttpError {
             status_code: Some(r.status()),
-            url: r.url().clone(),
+            url: Some(r.url().clone()),
             error: r.text().await.unwrap_or_else(|_| String::new()),
         }
     }

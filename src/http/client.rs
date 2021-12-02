@@ -72,7 +72,7 @@ impl HttpClient {
 
         Err(HttpError {
             status_code: response_error.status(),
-            url: response_error.url().clone(),
+            url: response_error.url().cloned(),
             error: "Something went wrong when to request".to_string(),
         })
     }
