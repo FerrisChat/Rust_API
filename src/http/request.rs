@@ -1,5 +1,5 @@
+use super::HttpMethod;
 use reqwest::header::HeaderMap;
-use reqwest::Method;
 
 pub struct Request<'a> {
     pub method: Method,
@@ -9,7 +9,7 @@ pub struct Request<'a> {
 }
 
 impl<'a> Request<'a> {
-    pub fn new(&mut self, method: Method, route: &str) {
+    pub fn new(&mut self, method: HttpMethod, route: &str) {
         self.method = method;
         self.route = route.to_string();
         self.headers = None;

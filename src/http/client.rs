@@ -40,45 +40,29 @@ impl HttpClient {
         // add_locks(&http);
     }
 
-    pub async fn request(
-        &self,
-        expected: u16,
-        request: Request<'_>,
-    ) -> Result<ReqwestResponse, ReqwestError> {
-        let mut response;
-        for tries in 0..3 {
-            let request_builder = self.client.request(
-                request.method,
-                format!("{}/{}", self.base_url, request.route),
-            );
+    pub async fn request(&self, request: Request<'_>) -> Result<ReqwestResponse, ReqwestError> {
+        let request_builder = self.client.request(
+            request.method.to_reqwest_method(),
+            format!("{}/{}", self.base_url, request.route),
+        );
 
-            if let Some(body) = request.body {
-                request_builder.json(&body);
-            }
+        if let Some(ref body) = request.body {
+            request_builder.json(body);
+        }
 
-            if let Some(headers) = request.headers {
-                request_builder.headers(headers);
-            }
+        if let Some(ref headers) = request.headers {
+            &mut request_builder.headers(headers);
+        }
 
-            response = request_builder.send().await;
+        let response = request_builder.send().await;
 
-            if let Ok(response) = response {
-                if response.status().as_u16() == expected {
-                    return Ok(response);
-                } else {
-                    if tries == 2 {
-                        break;
-                    }
-                }
-            } else {
-                if tries == 2 {
-                    break;
-                }
+        if let Ok(response) = response {
+            if response.status().is_success() {
+                Ok(response)
             }
         }
 
-        Err(response.unwrap_err())
-        // TODO: Return Error
+        Err(HttpError::from_response(response))
     }
 }
 
