@@ -43,17 +43,17 @@ impl HttpClient {
     }
 
     pub async fn request(&self, request: Request<'_>) -> Result<ReqwestResponse, HttpError> {
-        let request_builder = self.client.request(
+        let mut request_builder = self.client.request(
             request.method.to_reqwest_method(),
             format!("{}/{}", self.base_url, request.route),
         );
 
         if let Some(body) = request.body {
-            request_builder.json(body);
+            request_builder = request_builder.json(body);
         }
 
         if let Some(headers) = request.headers {
-            request_builder.headers(headers);
+            request_builder = request_builder.headers(headers);
         }
 
         let response = request_builder.send().await;
