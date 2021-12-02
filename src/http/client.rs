@@ -5,7 +5,7 @@ use std::result::Result;
 use super::request::Request;
 // use dashmap::DashMap;
 
-use reqwest::{header, Client, ClientBuilder, Error as ReqwestError, Response as ReqwestResponse};
+use reqwest::{header, Client, ClientBuilder, Response as ReqwestResponse};
 
 use super::HttpError;
 
@@ -60,11 +60,21 @@ impl HttpClient {
 
         if let Ok(resp) = response {
             if resp.status().is_success() {
-                return Ok(resp)
+                return Ok(resp);
+            } else {
+                Err(HttpError::from_response(resp).await)
             }
         }
 
-        Err(HttpError::from_response(response))
+        let response_error = response
+            .err()
+            .unwrap_or_else(|| unreachable!("Unable to unwrap error from response"));
+
+        Err(HttpError {
+            status_code: response_error.status(),
+            url: response_error.url().clone(),
+            error: "Something went wrong when to request".to_string(),
+        })
     }
 }
 
