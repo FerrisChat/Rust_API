@@ -51,6 +51,6 @@ websocket = []
 
 all = ["http", "model", "websocket"]
 
-rustls_tls = ["reqwest/rustls-tls", "tokio-tungstenite/rustls-tls"]
+rustls_tls = ["reqwest/rustls-tls", "tokio-tungstenite/rustls-tls-webpki-roots"]
 
 native_tls = ["reqwest/native-tls", "tokio-tungstenite/native-tls"]
