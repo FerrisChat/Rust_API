@@ -20,8 +20,8 @@ pub struct Websocket {
 }
 
 impl Websocket {
-    pub async fn new(url: String, token: String) -> Result<Websocket> {
-        let parsed_url = Url::parse(&url).map_err(|e| panic!("Failed to parse url: {}", e))?;
+    pub async fn new(url: &str, token: String) -> Result<Websocket> {
+        let parsed_url = Url::parse(url).map_err(|e| panic!("Failed to parse url: {}", e))?;
 
         let stream = create_ws_stream(parsed_url).await?;
 
@@ -31,21 +31,31 @@ impl Websocket {
     pub async fn connect(&self) -> Result<()> {
         self.identify().await?;
 
-        while let Some(message) = self.stream.next().await {
-            let message = message?;
+        Ok(())
+    }
 
-            match message {
-                Message::Text(payload) => {
-                    tokio::task::spawn(self.handle_event(serde_json::from_str(&payload)?));
-                }
-                Message::Close(Some(frame)) => {
-                    return Err(Error::Websocket(WebsocketError::Closed(Some(frame))));
-                }
-                _ => (),
+    pub async fn receive_json(&self) -> Result<Value> {
+        let message = self.stream.next().await;
+
+        let payload = match message {
+            Message::Text(payload) => {
+                serde_json::from_str(&payload)?;
             }
+            Message::Close(Some(frame)) => {
+                return Err(Error::Websocket(WebsocketError::Closed(Some(frame))));
+            }
+            _ => (),
         }
 
-        Ok(())
+        Ok()
+    }
+
+    pub async fn send_json(&self, payload: &Value) -> Result<()> {
+        Ok(serde_json::to_string(value)
+                .map(Message::Text)
+                .map_err(Error::from)
+                .map(|m| self.send(m))?
+                .await?)
     }
 
     pub async fn identify(&self) -> Result<()> {
@@ -57,7 +67,7 @@ impl Websocket {
             }
         });
 
-        self.stream.send(payload).await?;
+        self.send_json(&payload).await?;
 
         Ok(())
     }
