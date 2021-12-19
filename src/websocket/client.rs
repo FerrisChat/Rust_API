@@ -1,8 +1,9 @@
 use super::WebsocketStream;
+use super::error::WebsocketError;
 
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 
-use super::error::WebsocketError;
+use futures_util::{SinkExt, StreamExt};
 
 use serde_json::{json, Value};
 
@@ -50,7 +51,7 @@ impl Websocket {
             "c": "Identify",
             "d": {
                 "token": self.token.clone(),
-                "intents": 0
+                "intents": 0 as u8
             }
         });
 
