@@ -17,6 +17,9 @@ include = [
 ]
 
 [dependencies]
+serde-json = "1.0"
+async-trait = "0.1"
+url = "2.2"
 
 [dependencies.reqwest]
 default-features = false
@@ -30,7 +33,7 @@ default-features = true
 features = ["fs", "macros", "rt", "sync", "time"]
 
 [dependencies.tokio-tungstenite]
-version = "0.15"
+version = "0.16"
 default-features = false
 optional = true
 features = ["connect"]
