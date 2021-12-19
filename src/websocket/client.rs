@@ -39,11 +39,13 @@ impl Websocket {
                     tokio::task::spawn(self.handle_event(serde_json::from_str(&payload)?));
                 }
                 Message::Close(Some(frame)) => {
-                    return Err(Error::Websocket(WebsocketError(Some(frame))));
+                    return Err(Error::Websocket(WebsocketError::Closed(Some(frame))));
                 }
                 _ => (),
             }
         }
+
+        Ok(())
     }
 
     pub async fn identify(&self) -> Result<()> {

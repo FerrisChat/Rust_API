@@ -3,8 +3,10 @@ use std::{error::Error as StdError, result::Result as StdResult};
 pub type Result<T> = StdResult<T, Error>;
 
 #[cfg(feature = "websocket")]
-use websocket::WebsocketError;
-use tungstenite::error::Error as TungsteniteError;
+use crate::websocket::WebsocketError;
+#[cfg(feature = "websocket")]
+use tokio_tungstenite::tungstenite::error::Error as TungsteniteError;
+
 use serde_json::Error as SerdeJsonError;
 
 #[derive(Debug)]
