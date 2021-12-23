@@ -21,14 +21,14 @@ pub struct Websocket {
 
 impl Websocket {
     pub async fn new(url: &str, token: String) -> Result<Websocket> {
-        let url = Url::parse(url).map_err(|e| panic!("Failed to parse url: {}", e))?;
+        let url = Url::parse(url).unwrap_or_else(|e| panic!("Failed to parse url: {}", e));
 
         let stream = create_ws_stream(url.clone()).await?;
 
         Ok(Websocket { stream, url, token })
     }
 
-    pub async fn connect(&self) -> Result<()> {
+    pub async fn connect(&mut self) -> Result<()> {
         self.identify().await?;
 
         Ok(())
