@@ -59,7 +59,7 @@ impl Websocket {
             "c": "Identify",
             "d": {
                 "token": self.token.clone(),
-                "intents": 0 as u8
+                "intents": 0_u8
             }
         });
 
