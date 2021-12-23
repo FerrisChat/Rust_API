@@ -1,5 +1,5 @@
-use super::WebsocketStream;
 use super::error::WebsocketError;
+use super::WebsocketStream;
 
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
 
@@ -35,27 +35,27 @@ impl Websocket {
     }
 
     pub async fn receive_json(&self) -> Result<Option<Value>> {
-        let message = self.stream.next().await
+        let message = self.stream.next().await;
 
         let payload = match message {
-            Some(Message::Text(payload)) => {
+            Message::Text(payload) => {
                 serde_json::from_str(&payload)?;
             }
-            Some(Message::Close(Some(frame))) => {
-                return Err(Error::Websocket(WebsocketError::Closed(Some(frame))));
+            Message::Close(Some(frame)) => {
+                return Err(Error::Websocket(WebsocketError::Closed(Some(frame))))
             }
-            _ => None,
-        }
+            _ => return None,
+        };
 
         Ok(Some(payload))
     }
 
     pub async fn send_json(&self, payload: &Value) -> Result<()> {
-        Ok(serde_json::to_string(value)
-                .map(Message::Text)
-                .map_err(Error::from)
-                .map(|m| self.send(m))?
-                .await?)
+        Ok(serde_json::to_string(payload)
+            .map(Message::Text)
+            .map_err(Error::from)
+            .map(|m| self.stream.send(m))?
+            .await?)
     }
 
     pub async fn identify(&self) -> Result<()> {
