@@ -9,8 +9,6 @@ use serde_json::{json, Value};
 
 use url::Url;
 
-use async_trait::async_trait;
-
 use crate::internal::prelude::*;
 
 pub struct Websocket {
