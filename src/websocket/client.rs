@@ -21,11 +21,11 @@ pub struct Websocket {
 
 impl Websocket {
     pub async fn new(url: &str, token: String) -> Result<Websocket> {
-        let parsed_url = Url::parse(url).map_err(|e| panic!("Failed to parse url: {}", e))?;
+        let url = Url::parse(url).map_err(|e| panic!("Failed to parse url: {}", e))?;
 
-        let stream = create_ws_stream(parsed_url.clone()).await?;
+        let stream = create_ws_stream(url.clone()).await?;
 
-        Ok(Websocket { stream, parsed_url, token })
+        Ok(Websocket { stream, url, token })
     }
 
     pub async fn connect(&self) -> Result<()> {
@@ -34,7 +34,7 @@ impl Websocket {
         Ok(())
     }
 
-    pub async fn receive_json(&self) -> Result<Option<Value>> {
+    pub async fn receive_json(&mut self) -> Result<Option<Value>> {
         let message = self.stream.next().await;
 
         let payload: Value = match message {
