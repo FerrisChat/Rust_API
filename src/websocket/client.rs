@@ -37,20 +37,20 @@ impl Websocket {
     pub async fn receive_json(&self) -> Result<Option<Value>> {
         let message = self.stream.next().await;
 
-        let payload = match message {
-            Message::Text(payload) => {
+        let payload: Value = match message {
+            Some(Ok(Message::Text(payload))) => {
                 serde_json::from_str(&payload)?;
             }
-            Message::Close(Some(frame)) => {
+            Some(Ok(Message::Close(Some(frame)))) => {
                 return Err(Error::Websocket(WebsocketError::Closed(Some(frame))))
             }
-            _ => return None,
+            _ => return Ok(None),
         };
 
         Ok(Some(payload))
     }
 
-    pub async fn send_json(&self, payload: &Value) -> Result<()> {
+    pub async fn send_json(&mut self, payload: &Value) -> Result<()> {
         Ok(serde_json::to_string(payload)
             .map(Message::Text)
             .map_err(Error::from)
