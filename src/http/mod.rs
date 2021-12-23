@@ -4,6 +4,9 @@ pub mod request;
 
 pub use self::error::HttpError;
 
+pub use client::*;
+pub use request::*;
+
 use reqwest::Method;
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
