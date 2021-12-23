@@ -23,9 +23,9 @@ impl Websocket {
     pub async fn new(url: &str, token: String) -> Result<Websocket> {
         let parsed_url = Url::parse(url).map_err(|e| panic!("Failed to parse url: {}", e))?;
 
-        let stream = create_ws_stream(parsed_url).await?;
+        let stream = create_ws_stream(parsed_url.clone()).await?;
 
-        Ok(Websocket { stream, url, token })
+        Ok(Websocket { stream, parsed_url, token })
     }
 
     pub async fn connect(&self) -> Result<()> {
@@ -38,9 +38,7 @@ impl Websocket {
         let message = self.stream.next().await;
 
         let payload: Value = match message {
-            Some(Ok(Message::Text(payload))) => {
-                serde_json::from_str(&payload)?;
-            }
+            Some(Ok(Message::Text(payload))) => serde_json::from_str(&payload)?,
             Some(Ok(Message::Close(Some(frame)))) => {
                 return Err(Error::Websocket(WebsocketError::Closed(Some(frame))))
             }
@@ -58,7 +56,7 @@ impl Websocket {
             .await?)
     }
 
-    pub async fn identify(&self) -> Result<()> {
+    pub async fn identify(&mut self) -> Result<()> {
         let payload = json!({
             "c": "Identify",
             "d": {
